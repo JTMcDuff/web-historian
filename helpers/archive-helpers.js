@@ -90,18 +90,10 @@ exports.isUrlArchived = function(url, callback) {
 
 
 // cache all non cached urls in the list
+// Check for all urls that are in sites.txt, but aren't archived.
+// create files for each of those urls.
+// GET the data for each site and append to the files.
 exports.downloadUrls = function(url, callback ) {
 
 };
 
-    // fs.readFile(paths.list, function(err, content){
-    //   if(err){
-    //     res.writeHead(500);
-    //     res.end('500');
-    //   }
-    //   else{
-    //     (console.log("success on _________:"))
-    //     res.writeHead(200, {'Content-Type': 'text/html'})
-    //     res.end(content, 'utf-8');
-    //   }
-    // }
