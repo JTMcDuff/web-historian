@@ -67,17 +67,30 @@ exports.isUrlInList = function(url, callback) {
 //add the url into the archives.sites.txt
 //Passes test.  Might need to refactor.
 exports.addUrlToList = function(url, callback) {
-  fs.appendFile(exports.paths.list, url+'\n');
+  fs.appendFile( exports.paths.list, url+'\n', function(){
   //console.log("writeFile complete")
-  exports.isUrlInList(url, function() {if(true){
+  exports.isUrlInList(url, function() {
+    if(true){
     //console.log("the url has been added");
-    if(callback){
-      callback(true)
-    }
-
-  }
-
+      if(callback){
+        callback(true)
+      }
+     }
+    // else{
+    //   //fs.appendFile( exports.paths.list, url+'\n', function(){
+    //     //if (callback) { callback(true); }
+    //      exports.isUrlInList(url, function() {
+    //        if(true){
+    // //console.log("the url has been added");
+    //           if(callback){
+    //             callback(true)
+    //           }
+    //         };
+    //       })
+    //   })
+    // }
   })
+})
 };
 
 

@@ -42,3 +42,11 @@ exports.handleRequest = function (req, res) {
   }
   // res.end(archive.paths.list); // ./archives/sites.txt
 };
+
+
+//When URL is POSTED,
+// Check if it is archived.  isURLArchived
+// If archived, serve.  If yes, do redirect.
+// If not, add to list of sites and direct to "Site will be archiced soon."
+// Check if it is in list. isURLInLsist (callback to addURLToList)
+// If not, add it.   See callback above.
