@@ -23,6 +23,19 @@ exports.handleRequest = function (req, res) {
 
   //   res.writeHeader(200, httpHelpers.headers)
   //   res.end(fs.readFile(path.join(__dirname +'/public/index.html')));
+  } else if ( req.method === 'POST') {
+     var storage = [];
+     req.on('data', function(data){
+       storage.push(data)
+     });
+     req.on('end', function(data){
+       var buffer = Buffer.concat(storage).toString().slice(5);
+       //buffer is
+       console.log('buffer',buffer);
+     });
+     //console.log('req',req);
+     res.writeHead(200,httpHelpers.headers);
+     res.end('You sent a POST.');
   } else{
     res.writeHead(404);
     res.end('404');
