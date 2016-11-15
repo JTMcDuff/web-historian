@@ -38,37 +38,54 @@ exports.readListOfUrls = function(callback) {
     if (err) { console.log('Unable to retrieve URL list', err); }
     //Convert content to array of file names
       var siteList = sites.toString().split('\n');
-       console.log("about to run callback on list of urls:", siteList, callback)
+       //console.log("about to run callback on list of urls:", siteList, callback)
 
        if(callback){
+
          callback(siteList);
        }
   });
 }
 //check to see if the given url is in List
-//Accepts a URL.
-//Returns true if URl is present.
-//Returns false it URL is not present.
+//Accepts a callback and a URL.
+//If the URL is in the list, run callback with true.
+//If the URL is not in the list, run callback with false.
 exports.isUrlInList = function(url, callback) {
-   readListOfUrls(function (){
-     if (callback) {callback}
-     if (siteList.indexOf(url) != -1) {return true;}
-     else {return false;}
-        })
+   exports.readListOfUrls(function (data){
+     if (data.indexOf(url) >= 0)
+     {
+        callback(true);
+     }  else {
+       callback(false);
+     }
+   })
+}
 
-
-
-};
 
 
 //add the url into the archives.sites.txt
+//Passes test.  Might need to refactor.
 exports.addUrlToList = function(url, callback) {
+  fs.writeFile(exports.paths.list, url)
+  console.log("writeFile complete")
+  exports.isUrlInList(url, function() {if(true){
+    console.log("the url has been added");
+    callback(true)
+  }
+
+  })
 };
 
 
-//check to see if the given url is archived
-//returns boolean
+//
 exports.isUrlArchived = function(url, callback) {
+  var address = exports.paths.archivedSites;
+  console.log('address', address);
+  fs.readdir(exports.paths.archivedSites, function(err,list) {
+    console.log("list", list);
+    if (list.indexOf(url) >= 0) { callback(true); }
+    else { callback(false); }
+  })
 };
 
 
