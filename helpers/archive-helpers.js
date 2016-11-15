@@ -67,10 +67,10 @@ exports.isUrlInList = function(url, callback) {
 //add the url into the archives.sites.txt
 //Passes test.  Might need to refactor.
 exports.addUrlToList = function(url, callback) {
-  fs.writeFile(exports.paths.list, url)
-  console.log("writeFile complete")
+  fs.appendFile(exports.paths.list, url+'\n');
+  //console.log("writeFile complete")
   exports.isUrlInList(url, function() {if(true){
-    console.log("the url has been added");
+    //console.log("the url has been added");
     if(callback){
       callback(true)
     }
@@ -84,9 +84,9 @@ exports.addUrlToList = function(url, callback) {
 //
 exports.isUrlArchived = function(url, callback) {
   var address = exports.paths.archivedSites;
-  console.log('address', address);
+  //console.log('address', address);
   fs.readdir(exports.paths.archivedSites, function(err,list) {
-    console.log("list", list);
+    //console.log("list", list);
     if (list.indexOf(url) >= 0) { callback(true); }
     else { callback(false); }
   })
@@ -98,7 +98,11 @@ exports.isUrlArchived = function(url, callback) {
 // create files for each of those urls.
 // GET the data for each site and append to the files.
 exports.downloadUrls = function(urlArr) {
+  var counter = 0
+
   for(var url of urlArr) {
+    counter ++
+    console.log("counter", counter)
     exports.isUrlInList(url, function(isInList) {
       if(!isInList) {
         exports.addUrlToList(url);
@@ -106,9 +110,10 @@ exports.downloadUrls = function(urlArr) {
     });
     console.log("about to check isUrlArchived")
     exports.isUrlArchived(url, (isArchived) => {
-      console.log('URL ITEM: ', url)
-      console.log('isArchived: ', isArchived)
+      //console.log('URL ITEM: ', url)
+      //console.log('isArchived: ', isArchived)
       if(!isArchived) {
+
         console.log("nope. Not archived", isArchived)
         http.get('http://' + url, (res) => {
           //console.log("res",res)
@@ -122,6 +127,7 @@ exports.downloadUrls = function(urlArr) {
             //console.log("rawData: ", rawData)
             // var stringifyData = JSON.stringify(rawData);
             // console.log("parsedData: ", parsedData)
+            console.log('writeTo:',exports.paths.archivedSites+'/'+url);
             fs.writeFile(exports.paths.archivedSites + '/'+url, rawData);
           });
         });
