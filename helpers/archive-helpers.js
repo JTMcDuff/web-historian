@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -70,7 +71,10 @@ exports.addUrlToList = function(url, callback) {
   console.log("writeFile complete")
   exports.isUrlInList(url, function() {if(true){
     console.log("the url has been added");
-    callback(true)
+    if(callback){
+      callback(true)
+    }
+
   }
 
   })
@@ -93,7 +97,40 @@ exports.isUrlArchived = function(url, callback) {
 // Check for all urls that are in sites.txt, but aren't archived.
 // create files for each of those urls.
 // GET the data for each site and append to the files.
-exports.downloadUrls = function(url, callback ) {
+exports.downloadUrls = function(urlArr) {
+  for(var url of urlArr) {
+    exports.isUrlInList(url, function(isInList) {
+      if(!isInList) {
+        exports.addUrlToList(url);
+      }
+    });
+    console.log("about to check isUrlArchived")
+    exports.isUrlArchived(url, (isArchived) => {
+      console.log('URL ITEM: ', url)
+      console.log('isArchived: ', isArchived)
+      if(!isArchived) {
+        console.log("nope. Not archived", isArchived)
+        http.get('http://' + url, (res) => {
+          //console.log("res",res)
+          // const statusCode = res.statusCode;
+          // const contentType = res.headers['content-type'];
+          res.setEncoding('utf8');
+          var rawData = '';
+          res.on('data', (chunk) => rawData += chunk);
+          res.on('end', () => {
+          console.log('IS THIS HAPPENING')
+            //console.log("rawData: ", rawData)
+            // var stringifyData = JSON.stringify(rawData);
+            // console.log("parsedData: ", parsedData)
+            fs.writeFile(exports.paths.archivedSites + '/'+url, rawData);
+          });
+        });
+      }
+    })
+  }
+
 
 };
+
+
 
